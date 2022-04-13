@@ -5,8 +5,13 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         go: [ '1.18', '1.17', '1.16', '1.15', '1.14', '1.13' ]
+        release: [false]
+        include:
+          - go: 1.15
+            release: true
     steps:
       
     - name: Checkout
@@ -44,13 +49,14 @@ jobs:
     - name: Pack
       if: |
         github.event_name == 'push'
-          && startsWith(github.event.ref, 'refs/tags/v')
+        #  && startsWith(github.event.ref, 'refs/tags/v')
       run: ./pack.sh "${{ steps.compute_tag.outputs.TAG }}"
 
     - name: Create Release
       if: |
         github.event_name == 'push'
           && startsWith(github.event.ref, 'refs/tags/v')
+          && matrix.release == 'true'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
