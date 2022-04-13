@@ -55,7 +55,7 @@ jobs:
       if: |
         github.event_name == 'push'
           && startsWith(github.event.ref, 'refs/tags/v')
-          && matrix.release == "true"
+          && startsWith(matrix.release, 'true')
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
