@@ -4,18 +4,23 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: [ '1.18', '1.17', '1.16', '1.15', '1.14', '1.13' ]
     steps:
       
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Setup Go
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v3
+      with:
+        go-version: ${{ matrix.go }}
 
     - name: Print Go Version
       run: go version
 
-    - name: Build
+    - name: Build with Go ${{ matrix.go }}
       run: ./build.sh
 
     - name: Test
