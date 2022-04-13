@@ -19,8 +19,7 @@ then
     exit 1
 fi
 
-for GOOS in linux; do
-    for GOARCH in amd64 386 arm64 arm mips64 mips mips64le mipsle mips64le ppc64 ppc64le riscv64 s390x; do
+build_go() {
         echo "packing $GOOS/$GOARCH" >&2
         export GOOS="$GOOS"
         export GOARCH="$GOARCH"
@@ -32,5 +31,11 @@ for GOOS in linux; do
         tar -cvzf "fixuid-$1-$GOOS-$GOARCH.tar.gz" fixuid
         sudo chmod u-s fixuid
         sudo chown "$perm" fixuid
+}
+
+
+for GOOS in linux; do
+    for GOARCH in amd64 386 arm64 arm mips64 mips mips64le mipsle ppc64 ppc64le riscv64 s390x; do
+        build_go
     done
 done
