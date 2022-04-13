@@ -49,7 +49,6 @@ jobs:
     - name: Pack
       if: |
         github.event_name == 'push'
-        #  && startsWith(github.event.ref, 'refs/tags/v')
       run: ./pack.sh "${{ steps.compute_tag.outputs.TAG }}"
 
     - name: Create Release
