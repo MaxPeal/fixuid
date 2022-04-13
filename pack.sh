@@ -40,7 +40,7 @@ for GOOS in linux; do
     done
 done
 for GOOS in darwin; do
-    for GOARCH in amd64 arm64 arm; do
+    for GOARCH in amd64 arm64; do
         build_go
     done
 done
