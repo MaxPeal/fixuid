@@ -53,22 +53,22 @@ jobs:
 
     - name: Create Release draft
       if: |
-        matrix.release == 'true'
+        matrix.release == true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         assets=()
         for asset in fixuid-*-*-*.tar.gz; do
+          sha256sum "$asset" | tee -a CHECKSUM
           assets+=("-a" "$asset")
         done
-        hub release create --draft "${assets[@]}" \
-          -m "v${{ steps.compute_tag.outputs.TAG }}" \
-          "v${{ steps.compute_tag.outputs.TAG }}"
+        hub release create --draft "${assets[@]} CHECKSUM" \
+          -m "draft" \
+          "draft"
 
     - name: Create Release
       if: |
-        matrix.release == 'true'
-          && startsWith(matrix.release, 'true')
+        startsWith(matrix.release, 'true')
           && github.event_name == 'push'
           && startsWith(github.event.ref, 'refs/tags/v')
       env:
