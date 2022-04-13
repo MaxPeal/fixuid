@@ -59,10 +59,11 @@ jobs:
       run: |
         assets=()
         for asset in fixuid-*-*-*.tar.gz; do
-          sha256sum "$asset" | tee -a CHECKSUM
           assets+=("-a" "$asset")
         done
-        hub release create --draft "${assets[@]} CHECKSUM" \
+          sha256sum -b "*.tar.*" | tee -a CHECKSUM
+          assets+=("-a" "CHECKSUM")
+        hub release create --draft "${assets[@]}" \
           -m "draft" \
           "draft"
 
@@ -78,6 +79,8 @@ jobs:
         for asset in fixuid-*-*-*.tar.gz; do
           assets+=("-a" "$asset")
         done
+          sha256sum -b "*.tar.*" | tee -a CHECKSUM
+          assets+=("-a" "CHECKSUM")
         hub release create "${assets[@]}" \
           -m "v${{ steps.compute_tag.outputs.TAG }}" \
           "v${{ steps.compute_tag.outputs.TAG }}"
