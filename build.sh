@@ -2,4 +2,4 @@
 cd "$(dirname "$0")"
 
 rm -f ./fixuid
-CGO_ENABLED=0 go build ; echo ErrorCode $? || echo ErrorCode $?
+CGO_ENABLED=0 go build -ldflags="-s -w" && echo ErrorCode $? || echo ErrorCode $?
