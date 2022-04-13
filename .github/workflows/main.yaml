@@ -7,7 +7,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go: [ '1.18', '1.17', '1.16', '1.15', '1.14', '1.13' ]
+        go: [ '1.18', '1.17', '1.16' ]
         release: [false]
         include:
           - go: 1.16
@@ -55,7 +55,7 @@ jobs:
       if: |
         github.event_name == 'push'
           && startsWith(github.event.ref, 'refs/tags/v')
-          && matrix.release == 'true'
+          && matrix.release == "true"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
