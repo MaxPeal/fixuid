@@ -58,11 +58,10 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         assets=()
-        for asset in fixuid-*-*-*.tar.gz; do
+        for asset in fixuid-*-*-*.tar.*; do
           assets+=("-a" "$asset")
           sha256sum -b "$asset" | tee -a CHECKSUM
         done
-          sha256sum -b "*.*" | tee -a CHECKSUM
           assets+=("-a" "CHECKSUM")
         hub release create --draft "${assets[@]}" \
           -m "draft" \
@@ -70,18 +69,17 @@ jobs:
 
     - name: Create Release
       if: |
-        startsWith(matrix.release, 'true')
+        matrix.release == true
           && github.event_name == 'push'
           && startsWith(github.event.ref, 'refs/tags/v')
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         assets=()
-        for asset in fixuid-*-*-*.tar.gz; do
+        for asset in fixuid-*-*-*.tar.*; do
           assets+=("-a" "$asset")
           sha256sum -b "$asset" | tee -a CHECKSUM
         done
-          sha256sum -b "*.tar.*" | tee -a CHECKSUM
           assets+=("-a" "CHECKSUM")
         hub release create "${assets[@]}" \
           -m "v${{ steps.compute_tag.outputs.TAG }}" \
