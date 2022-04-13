@@ -54,6 +54,7 @@ jobs:
     - name: Create Release draft
       if: |
         matrix.release == true
+          && startsWith(github.event.ref, 'refs/tags/v') != true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
@@ -63,6 +64,8 @@ jobs:
           sha256sum -b "$asset" | tee -a CHECKSUM
         done
           assets+=("-a" "CHECKSUM")
+          sha256sum -b "CHECKSUM" | tee -a CHECKSUM.sha256
+          assets+=("-a" "CHECKSUM.sha256")
         hub release create --draft "${assets[@]}" \
           -m "draft" \
           "draft"
@@ -81,6 +84,8 @@ jobs:
           sha256sum -b "$asset" | tee -a CHECKSUM
         done
           assets+=("-a" "CHECKSUM")
+          sha256sum -b "CHECKSUM" | tee -a CHECKSUM.sha256
+          assets+=("-a" "CHECKSUM.sha256")
         hub release create "${assets[@]}" \
           -m "v${{ steps.compute_tag.outputs.TAG }}" \
           "v${{ steps.compute_tag.outputs.TAG }}"
