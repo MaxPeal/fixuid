@@ -39,3 +39,8 @@ for GOOS in linux; do
         build_go
     done
 done
+for GOOS in darwin; do
+    for GOARCH in amd64 arm64; do
+        build_go
+    done
+done
