@@ -51,11 +51,26 @@ jobs:
         github.event_name == 'push'
       run: ./pack.sh "${{ steps.compute_tag.outputs.TAG }}"
 
+    - name: Create Release draft
+      if: |
+        matrix.release == 'true'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        assets=()
+        for asset in fixuid-*-*-*.tar.gz; do
+          assets+=("-a" "$asset")
+        done
+        hub release create --draft "${assets[@]}" \
+          -m "v${{ steps.compute_tag.outputs.TAG }}" \
+          "v${{ steps.compute_tag.outputs.TAG }}"
+
     - name: Create Release
       if: |
-        github.event_name == 'push'
-          && startsWith(github.event.ref, 'refs/tags/v')
+        matrix.release == 'true'
           && startsWith(matrix.release, 'true')
+          && github.event_name == 'push'
+          && startsWith(github.event.ref, 'refs/tags/v')
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
